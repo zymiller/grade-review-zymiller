@@ -1,4 +1,5 @@
 CPATH=';lib/junit-4.13.2.jar;lib/hamcrest-core-1.3.jar'
+TOTAL=2
 
 rm -rf student-submission
 rm -rf grading-area
@@ -63,8 +64,13 @@ java -cp $CPATH org.junit.runner.JUnitCore TestListExamples > test-results.txt
 
 # Checks if there are failures in the tests
 grep 'Failures: ' test-results.txt
-    if [[ $? -eq 1 ]]; then
+    if [[ $? -ne 0 ]]; then
         echo 'ListExample.java passed all tests'
+        tests=0
     else
-        grep -E '[0-9]) test' test-results.txt
+        grep -E '[0-9]) test' test-results.txt > failed-tests.txt
+        tests=`wc -l < failed-tests.txt`
     fi
+echo $tests
+score=$(($TOTAL - $tests))
+echo "Your score is $score / $TOTAL"
